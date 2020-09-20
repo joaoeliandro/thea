@@ -6,7 +6,7 @@
 </h1>
 
 <h4 align="center">
-  Serviço de bot com utilização da API do Whatsapp da Zenvia para gerenciamento de jornada dos passageiros em Aeroportos e Rodoviárias.
+  Serviço de bot com utilização da API do Whatsapp da Zenvia para mapeamento de jornada dos passageiros em Aeroportos e Rodoviárias.
 </h4>
 
 <p align="center">
