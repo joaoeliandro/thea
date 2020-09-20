@@ -12,7 +12,7 @@ app.get("/send", async (request, response) => {
 
   const result = await zenvia.sendMessage(message);
 
-  console.log(result);
+  return response.json(result);
 });
 
 app.listen(3333, () => {
