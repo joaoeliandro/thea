@@ -1,0 +1,14 @@
+{
+  "name": "theia",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "start": "node src/server.js"
+  },
+  "repository": "https://github.com/joaoeliandro/theia.git",
+  "author": "João Eliandro <eliandrogermano@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
