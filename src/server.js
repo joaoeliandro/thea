@@ -18,3 +18,5 @@ app.get("/send", async (request, response) => {
 app.listen(3333, () => {
   console.log("Server started!");
 });
+
+zenvia.receiveMessage();
