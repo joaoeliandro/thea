@@ -1,4 +1,4 @@
-const { Client, TextContent } = require("@zenvia/sdk");
+const { Client, TextContent, WebhookController } = require("@zenvia/sdk");
 
 const client = new Client('FdUmxhH9x3FiJ76H9FLZvzy0WQl6S2m1Eh_y');
 
@@ -13,4 +13,28 @@ function sendMessage(message) {
     .catch(error => error);
 };
 
-module.exports = { sendMessage };
+function receiveMessage() {
+  const webhook = new WebhookController({
+    messageEventHandler: (messageEvent) => {
+      console.log('Message event:', messageEvent);
+    },
+    messageStatusEventHandler: (messageStatusEvent) => {
+      console.log('Message status event:', messageStatusEvent);
+    },
+    client,
+    url: 'https://webhook.site/4a5589fc-7776-4a4e-9ce7-75b6f953f538',
+    channel: 'whatsapp',
+  });
+
+  webhook.on('listening', () => {
+    console.log('Webhook is listening');
+  });
+  
+  webhook.on('error', (error) => {
+    console.error('Error:', error);
+  });
+  
+  webhook.init();
+}
+
+module.exports = { sendMessage, receiveMessage };
