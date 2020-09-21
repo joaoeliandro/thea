@@ -1,3 +1,4 @@
+require("dotenv/config");
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
@@ -17,7 +18,7 @@ app.post("/send-message", async (request, response) => {
   const { message } = request.body;
 
   if (message === "init") {
-    zenvia.receiveMessage("https://webhook.site/4a5589fc-7776-4a4e-9ce7-75b6f953f538");
+    zenvia.receiveMessage(process.env.URLWEBHOOK);
 
     return response.send("ok");
   }
