@@ -1,9 +1,12 @@
+require("dotenv/config");
 const ngrok = require("ngrok");
 const { Client, TextContent, WebhookController } = require("@zenvia/sdk");
 
-const port = 3000;
-const token = "FdUmxhH9x3FiJ76H9FLZvzy0WQl6S2m1Eh_y";
-const channel = "whatsapp";
+const port = process.env.PORTZENVIA;
+const token = process.env.TOKEN;
+const channel = process.env.CHANNEL;
+const numberRecipient = process.env.RECIPIENT;
+const senderID = process.env.SENDERID;
 
 const client = new Client(token);
 
@@ -12,8 +15,8 @@ const whatsapp = client.getChannel(channel);
 function sendMessage(message) {
   const content = new TextContent(message);
 
-  return whatsapp.sendMessage('unruly-trip',
-    '5584981599453', content)
+  return whatsapp.sendMessage(senderID,
+    numberRecipient, content)
     .then(response => response)
     .catch(error => error);
 };
@@ -22,15 +25,16 @@ const url = (async () => await ngrok.connect(port))();
 
 async function receiveMessage(url) {
 
+  sendMessage("Olá, Bem vindo ao Serviço Thea!");
+  sendMessage("Como posso te chamar?");
+
   url = await url;
   console.log(`Iniciando a aplicação na porta ${port}, usando para webhook a URL: ${url}`);
 
   const webhook = new WebhookController({
     port,
-    client,
-    channel,
-    url,
     messageEventHandler: (messageEvent) => {
+      console.log(messageEvent)
       const phone = messageEvent.message.from;
       const senderId = messageEvent.message.to;
       let firstName;
@@ -38,13 +42,10 @@ async function receiveMessage(url) {
 
       messageEvent.message.contents.forEach(content => {
         switch (content.type) {
-
-          // Caso o usuário tenha enviado uma mensagem texto
           case 'text':
             const text = content.text;
             console.log(`O número "${phone}" enviou a mensagem: "${text}"`);
 
-            // Tendo o nome do usuário disponível, personalizamos a resposta
             if (firstName) {
               reply = `${firstName}, obrigado pela mensagem enviada!`;
             } else {
@@ -52,13 +53,11 @@ async function receiveMessage(url) {
             }
             break;
 
-          // Caso o usuário tenha enviado um arquivo, imagem, vídeo ou áudio
           case 'file':
             const url = content.fileUrl;
             const type = content.fileType;
             console.log(`O número "${phone}" enviou um arquivo do tipo "${type}": "${url}"`);
 
-            // Tendo o nome do usuário disponível, personalizamos a resposta
             if (firstName) {
               reply = `${firstName}, obrigado pelo arquivo enviado!`;
             } else {
@@ -66,8 +65,6 @@ async function receiveMessage(url) {
             }
             break;
 
-          /* Caso tenha dados do usuário disponível.
-            Normalmente tem, mas o usuário pode desabilitar isso. */
           case 'json':
             if (content.payload.visitor) {
               firstName = content.payload.visitor.firstName;
@@ -89,6 +86,9 @@ async function receiveMessage(url) {
     messageStatusEventHandler: (messageStatusEvent) => {
       console.log('Message status event:', messageStatusEvent);
     },
+    client,
+    url,
+    channel,
   });
 
   webhook.on('error', (error) => {
